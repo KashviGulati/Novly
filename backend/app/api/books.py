@@ -1,17 +1,9 @@
 from fastapi import APIRouter
-from app.core.supabase import supabase
+from app.services.google_books import search_books
 
 router = APIRouter()
 
 
-@router.get("/test-db")
-def test_db():
-
-    result = (
-        supabase
-        .table("books")
-        .select("*")
-        .execute()
-    )
-
-    return result.data
+@router.get("/search")
+def book_search(q: str):
+    return search_books(q)
