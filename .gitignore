@@ -1,0 +1,59 @@
+# ======================
+# Python
+# ======================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+
+# Virtual Environment
+venv/
+.venv/
+
+# Environment Variables
+.env
+.env.*
+!.env.example
+
+# ======================
+# Node.js / Next.js
+# ======================
+node_modules/
+.next/
+out/
+dist/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ======================
+# VS Code
+# ======================
+.vscode/
+
+# ======================
+# OS Files
+# ======================
+.DS_Store
+Thumbs.db
+
+# ======================
+# Build Files
+# ======================
+build/
+coverage/
+
+# ======================
+# Capacitor (later)
+# ======================
+android/app/build/
+android/.gradle/
+
+# ======================
+# Misc
+# ======================
+*.log
