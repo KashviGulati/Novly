@@ -1,6 +1,5 @@
 import requests
 
-
 BAD_KEYWORDS = [
     "summary",
     "study guide",
@@ -15,7 +14,10 @@ def search_books(query: str):
 
     response = requests.get(
         "https://openlibrary.org/search.json",
-        params={"q": query}
+        params={
+            "title": query,
+            "limit": 20
+        }
     )
 
     data = response.json()
@@ -37,6 +39,11 @@ def search_books(query: str):
             "title": title,
             "author": ", ".join(
                 book.get("author_name", [])
+            ),
+            "cover_url": (
+                f"https://covers.openlibrary.org/b/id/{book['cover_i']}-L.jpg"
+                if book.get("cover_i")
+                else None
             )
         })
 
