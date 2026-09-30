@@ -1,14 +1,10 @@
 from fastapi import APIRouter
 from app.services.google_books import search_books
 from app.models.book import AddBookRequest
-from app.services.book_service import create_book_if_not_exists
+from app.core.supabase import supabase
 from app.services.library_service import get_library
 from app.services.enrichment_agent import enrich_book
-from app.services.book_service import (
-    create_book_if_not_exists,
-    update_book_enrichment,
-    get_book
-)
+from app.services.book_service import (create_book_if_not_exists,update_book_enrichment,get_book)
 
 
 router = APIRouter()
@@ -65,4 +61,20 @@ def enrich(book_id: str):
     return {
         "success": True,
         "book": updated_book
+    }
+
+@router.get("/")
+def get_all_books():
+
+    books = (
+        supabase
+        .table("books")
+        .select("*")
+        .order("created_at", desc=True)
+        .execute()
+    )
+
+    return {
+        "success": True,
+        "books": books.data
     }
