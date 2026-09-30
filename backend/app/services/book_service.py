@@ -74,3 +74,17 @@ def get_book(book_id):
     )
 
     return result.data
+
+def update_book_status(book_id: str, status: str):
+
+    result = (
+        supabase
+        .table("books")
+        .update({
+            "status": status
+        })
+        .eq("id", book_id)
+        .execute()
+    )
+
+    return result.data[0]

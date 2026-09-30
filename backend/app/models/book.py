@@ -6,3 +6,4 @@ class AddBookRequest(BaseModel):
     title: str
     author: str
     cover_url: str | None = None
+    status: str | None = "want_to_read"

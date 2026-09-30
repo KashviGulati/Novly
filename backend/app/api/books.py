@@ -4,7 +4,7 @@ from app.models.book import AddBookRequest
 from app.core.supabase import supabase
 from app.services.library_service import get_library
 from app.services.enrichment_agent import enrich_book
-from app.services.book_service import (create_book_if_not_exists,update_book_enrichment,get_book)
+from app.services.book_service import (create_book_if_not_exists,update_book_enrichment,get_book,update_book_status)
 
 
 router = APIRouter()
@@ -24,6 +24,7 @@ def add_book(book: AddBookRequest):
             "title": book.title,
             "author": book.author,
             "cover_url": book.cover_url,
+            "status": book.status,
             "enriched": False
         }
     )
@@ -77,4 +78,17 @@ def get_all_books():
     return {
         "success": True,
         "books": books.data
+    }
+
+@router.put("/status/{book_id}")
+def update_status(book_id: str, status: str):
+
+    updated_book = update_book_status(
+        book_id,
+        status
+    )
+
+    return {
+        "success": True,
+        "book": updated_book
     }

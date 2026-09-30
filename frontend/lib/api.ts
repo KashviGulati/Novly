@@ -59,3 +59,17 @@ export async function addBook(book: any) {
     throw err;
   }
 }
+
+export async function updateStatus(
+  bookId: string,
+  status: string
+) {
+  const res = await fetch(
+    `${API_URL}/books/status/${bookId}?status=${status}`,
+    {
+      method: "PUT",
+    }
+  );
+
+  return res.json();
+}

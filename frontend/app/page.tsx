@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { searchBooks, getBooks, addBook } from "@/lib/api";
+import { searchBooks, getBooks, addBook, updateStatus } from "@/lib/api";
+import BookGrid from "@/components/BookGrid";
 
 export default function Home() {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<any[]>([]);
   const [bookshelf, setBookshelf] = useState<any[]>([]);
+  const [status, setStatus] = useState("want_to_read");
 
   async function loadBooks() {
     try {
@@ -29,9 +31,29 @@ export default function Home() {
   }
 
   async function handleAdd(book: any) {
-    await addBook(book);
+    await addBook({
+      ...book,
+      status,
+    });
+
     await loadBooks();
   }
+
+  const wantToRead = bookshelf.filter(
+    (book) => book.status === "want_to_read" || !book.status
+  );
+
+  const currentlyReading = bookshelf.filter(
+    (book) => book.status === "currently_reading"
+  );
+
+  const finished = bookshelf.filter(
+    (book) => book.status === "finished"
+  );
+
+  const dnf = bookshelf.filter(
+    (book) => book.status === "dnf"
+  );
 
   return (
     <main className="min-h-screen bg-gray-50 p-8">
@@ -87,55 +109,66 @@ export default function Home() {
                   {book.author}
                 </p>
 
-                <button
-                  onClick={() => handleAdd(book)}
-                  className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg"
-                >
-                  Add to Shelf
-                </button>
+                <div className="flex gap-2 mt-4">
+                  <select
+                    value={status}
+                    onChange={(e) =>
+                      setStatus(e.target.value)
+                    }
+                    className="border rounded-lg px-2"
+                  >
+                    <option value="want_to_read">
+                      Want To Read
+                    </option>
+
+                    <option value="currently_reading">
+                      Currently Reading
+                    </option>
+
+                    <option value="finished">
+                      Finished
+                    </option>
+
+                    <option value="dnf">
+                      DNF
+                    </option>
+                  </select>
+
+                  <button
+                    onClick={() => handleAdd(book)}
+                    className="bg-blue-600 text-white px-4 py-2 rounded-lg"
+                  >
+                    Add
+                  </button>
+                </div>
               </div>
             </div>
           ))}
         </div>
 
-        <h2 className="text-2xl font-semibold mb-4">
-          My Bookshelf
+        <h2 className="text-3xl font-bold mb-4">
+          📖 Currently Reading
         </h2>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
-          {bookshelf.map((book) => (
-            <div
-              key={book.id}
-              className="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden"
-            >
-              {book.cover_url ? (
-                <img
-                  src={book.cover_url}
-                  alt={book.title}
-                  className="w-full h-72 object-cover"
-                />
-              ) : (
-                <div className="w-full h-72 bg-gray-200 flex items-center justify-center">
-                  No Cover
-                </div>
-              )}
+        <BookGrid books={currentlyReading} />
 
-              <div className="p-3">
-                <h3 className="font-semibold line-clamp-2">
-                  {book.title}
-                </h3>
+        <h2 className="text-3xl font-bold mt-12 mb-4">
+          📚 Want To Read
+        </h2>
 
-                <p className="text-sm text-gray-600 mt-1">
-                  {book.author}
-                </p>
+        <BookGrid books={wantToRead} />
 
-                <span className="inline-block mt-3 px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-700">
-                  {book.status || "Want to Read"}
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
+        <h2 className="text-3xl font-bold mt-12 mb-4">
+          ✅ Finished
+        </h2>
+
+        <BookGrid books={finished} />
+
+        <h2 className="text-3xl font-bold mt-12 mb-4">
+          ❌ DNF
+        </h2>
+
+        <BookGrid books={dnf} />
       </div>
     </main>
   );
