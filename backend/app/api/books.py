@@ -3,6 +3,12 @@ from app.services.google_books import search_books
 from app.models.book import AddBookRequest
 from app.services.book_service import create_book_if_not_exists
 from app.services.library_service import get_library
+from app.services.enrichment_agent import enrich_book
+from app.services.book_service import (
+    create_book_if_not_exists,
+    update_book_enrichment,
+    get_book
+)
 
 
 router = APIRouter()
@@ -37,4 +43,26 @@ def library():
     return {
         "success": True,
         "books": get_library()
+    }
+
+
+
+@router.post("/enrich/{book_id}")
+def enrich(book_id: str):
+
+    book = get_book(book_id)
+
+    enrichment = enrich_book(
+        book["title"],
+        book["author"]
+    )
+
+    updated_book = update_book_enrichment(
+        book_id,
+        enrichment
+    )
+
+    return {
+        "success": True,
+        "book": updated_book
     }

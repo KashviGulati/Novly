@@ -22,3 +22,55 @@ def create_book_if_not_exists(book_data):
     )
 
     return result.data[0]
+
+from app.core.supabase import supabase
+
+
+def update_book_enrichment(book_id, enrichment):
+
+    result = (
+        supabase
+        .table("books")
+        .update({
+            "themes": enrichment["themes"],
+            "moods": enrichment["moods"],
+            "pacing": enrichment["pacing"],
+            "description": enrichment["description"],
+            "enriched": True
+        })
+        .eq("id", book_id)
+        .execute()
+    )
+
+    return result.data[0]
+
+def update_book_enrichment(book_id, enrichment):
+
+    result = (
+        supabase
+        .table("books")
+        .update({
+            "themes": enrichment["themes"],
+            "moods": enrichment["moods"],
+            "pacing": enrichment["pacing"],
+            "description": enrichment["description"],
+            "enriched": True
+        })
+        .eq("id", book_id)
+        .execute()
+    )
+
+    return result.data[0]
+
+def get_book(book_id):
+
+    result = (
+        supabase
+        .table("books")
+        .select("*")
+        .eq("id", book_id)
+        .single()
+        .execute()
+    )
+
+    return result.data
